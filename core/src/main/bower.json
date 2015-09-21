@@ -1,0 +1,13 @@
+{
+  "name": "bank",
+  "description": "AngularJS front-end for bank app",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "angular": "1.2.9",
+    "angular-route": "1.2.9",
+    "angular-resource": "1.2.9"
+  }
+}
+
+

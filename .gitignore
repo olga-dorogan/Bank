@@ -1,0 +1,11 @@
+#IntelliJ Idea
+*.iml
+.idea/
+
+#Maven
+target/
+
+#Client-side
+logs/*
+node_modules/
+bower_components/

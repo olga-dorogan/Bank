@@ -1,0 +1,118 @@
+<div>
+    <table class="table table-hover table-bordered table-condensed">
+        <caption>Счета клиента {{client.surname + " "+ client.name}}</caption>
+        <thead>
+        <tr>
+            <td class="col-md-2 text-center">#</td>
+            <td class="col-md-4 text-center">Счет</td>
+            <td class="col-md-4 text-center">Состояние</td>
+            <td class="col-md-2 text-center">Действия</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="account in accounts | orderBy: 'amount'">
+            <td class="text-center">{{$index + 1}}</td>
+            <td class="text-center">{{account.title}}</td>
+            <td class="text-center">{{account.amount}}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="text-center">{{accounts.length + 1}}</td>
+            <td><input ng-model="newAccount.title" class="center-block"/></td>
+            <td><input ng-model="newAccount.amount" class="center-block"/></td>
+            <td class="text-center">
+                <button type="button" class="btn btn-success btn-s center-block"
+                        ng-click="addAccount()">
+                    <span class="glyphicon glyphicon-plus"></span> Добавить
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <hr>
+    <div class="row">
+        <p class="text-info">Услуги</p>
+    </div>
+    <div class="row">
+        <p class="text-info">1. Перевод между счетами</p>
+    </div>
+    <div class="row">
+        <div class="row">
+            <div class="col-md-2">
+                <label for="amount-1">Сумма</label>
+                <input class="account-value"
+                       type="number" min="0" max="{{transactionMax}}" id="amount-1"
+                       ng-model="transaction.amount">
+            </div>
+            <div class="col-md-4">
+                <label for="accountFrom-1">Счет для списания</label>
+                <select id="accountFrom-1"
+                        ng-model="transaction.accountFrom.id"
+                        ng-options="account.id as account.title for account in accounts | orderBy:'amount' "
+                        ng-click="changeTransactionAmount()"
+                        class="form-control">
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="accountTo-1">Счет для зачисления</label>
+                <select id="accountTo-1"
+                        ng-model="transaction.accountTo.id"
+                        ng-options="account.id as account.title for account in accounts | orderBy:'amount' "
+                        class="form-control">
+                </select>
+            </div>
+            <div class="col-md-2 text-center">
+                <button id="btn-transaction" class="btn btn-success btn-transaction" ng-click="doTransaction()">
+                    Выполнить
+                </button>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <p class="text-info">2. Пополнение счета</p>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label for="amount-2">Сумма</label>
+            <input id="amount-2" class="account-value" type="number" ng-model="credit.amount">
+        </div>
+        <div class="col-md-4">
+            <label for="accountTo-2">Счет для зачисления</label>
+            <select id="accountTo-2"
+                    ng-model="credit.accountTo.id"
+                    ng-options="account.id as account.title for account in accounts | orderBy:'amount' "
+                    class="form-control">
+            </select>
+        </div>
+        <div class="col-md-4"></div>
+        <div class="col-md-2 text-center">
+            <button class="btn btn-success btn-transaction" ng-click="creditAccount()">Выполнить</button>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <p class="text-info">3. Снятие со счета</p>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label for="amount-3">Сумма</label>
+            <input id="amount-3" class="account-value"
+                   type="number" min="0" max="{{debitMax}}"
+                   ng-model="debit.amount" >
+        </div>
+        <div class="col-md-4">
+            <label for="accountTo-3">Счет для снятия</label>
+            <select id="accountTo-3"
+                    ng-model="debit.accountFrom.id"
+                    ng-options="account.id as account.title for account in accounts | orderBy:'amount' "
+                    ng-click="changeDebitAmount()"
+                    class="form-control">
+            </select>
+        </div>
+        <div class="col-md-4"></div>
+        <div class="col-md-2 text-center">
+            <button class="btn btn-success btn-transaction" ng-click="debitAccount()">Выполнить</button>
+        </div>
+    </div>
+</div>

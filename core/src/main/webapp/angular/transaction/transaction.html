@@ -1,0 +1,25 @@
+<div>
+    <table class="table table-hover table-bordered table-condensed">
+        <thead>
+        <tr>
+            <td class="col-md-1 text-center">#</td>
+            <td class="col-md-2 text-center">Дата</td>
+            <td class="col-md-3 text-center">Клиент</td>
+            <td class="col-md-3 text-center">Счет</td>
+            <td class="col-md-2 text-center">Операция</td>
+            <td class="col-md-1 text-center">Сумма</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="transaction in transactions | orderBy: ['date', 'clientName', 'accountTitle', 'amount']  track by $index">
+            <td class="text-center">{{$index + 1}}</td>
+            <td>{{transaction.date}}</td>
+            <td class="text-center">{{transaction.clientName}}</td>
+            <td class="text-center">{{transaction.accountTitle}}</td>
+            <td class="text-center">{{transaction.type}}</td>
+            <td class="text-center">{{transaction.amount}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+

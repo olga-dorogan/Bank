@@ -1,0 +1,31 @@
+<div>
+    <table class="table table-hover table-bordered table-condensed">
+        <thead>
+        <tr>
+            <td class="col-md-1 text-center">#</td>
+            <td class="col-md-3 text-center">Фамилия</td>
+            <td class="col-md-3 text-center">Имя</td>
+            <td class="col-md-2 text-center">Перейти к счетам</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="client in clients | orderBy: 'surname'">
+            <td class="text-center">{{$index + 1}}</td>
+            <td class="text-center">{{client.surname}}</td>
+            <td class="text-center">{{client.name}}</td>
+            <td class="text-center"><a href="#/person/{{client.id}}/account">Счета</a></td>
+        </tr>
+        <tr>
+            <td class="text-center">{{clients.length + 1}}</td>
+            <td><input ng-model="newClient.surname" class="center-block"/></td>
+            <td><input ng-model="newClient.name" class="center-block"/></td>
+            <td class="text-center">
+                <button type="button" class="btn btn-success btn-s center-block"
+                        ng-click="addClient()">
+                    <span class="glyphicon glyphicon-plus"></span> Добавить
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
