@@ -9,7 +9,7 @@ It saves info about clients, client accounts and transactions between accounts.
 * MySQL 5.5 or 5.6
 * JDK 1.7 
 * Maven 3.
-* Tomcat 7+ to be able to run the application on a standalone Tomcat server
+* (optionally) Tomcat 7+ to be able to run the application on a standalone Tomcat server
 
 ###Download project###
 git clone https://github.com/olga-dorogan/Bank.git
@@ -33,3 +33,7 @@ git clone https://github.com/olga-dorogan/Bank.git
 
 ###Build Project###
 ```mvn clean package -DskipTests=true```
+
+###Run the app(core module)###
+```mvn tomcat7:run```
+After executing the command, app is available at [app](http://localhost:8080/core)
