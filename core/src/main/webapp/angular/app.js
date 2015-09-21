@@ -8,5 +8,5 @@ angular.module('bankApp', [
         $routeProvider.otherwise({redirectTo: '/person'});
     }])
     .factory('transactionRest', function ($resource) {
-        return $resource('http://localhost:8080/transaction');
+        return $resource('transaction');
     });
