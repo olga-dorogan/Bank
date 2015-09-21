@@ -16,9 +16,9 @@
             testOnBorrow="true"
             removeAbandoned="true"
             removeAbandonedTimeout="233"
-            username="root"
-            password="root"
-            driverClassName="com.mysql.jdbc.Driver"
-            url="jdbc:mysql://localhost:3306/bank_db"
+            driverClassName="${jdbc.driver}"
+            url="${jdbc.url}"
+            username="${db.user}"
+            password="${db.password}"
             />
 </Context>

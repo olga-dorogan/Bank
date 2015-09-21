@@ -6,17 +6,17 @@ It saves info about clients, client accounts and transactions between accounts.
 
 ##Setup##
 ###Prerequisites###
-* MySQL 5.5 or 5.6
 * JDK 1.7 
 * Maven 3.
+* (optionally) MySQL 5.5 or 5.6 to be able to use the an external database
 * (optionally) Tomcat 7+ to be able to run the application on a standalone Tomcat server
 
 ###Download project###
 git clone https://github.com/olga-dorogan/Bank.git
 
-###Prepare MySql Database###
+###Prepare MySql Database (optionally)###
 1. Install the MySql Server version 5.5 or above.
-2. Prepare development database with the sql-maven-plugin. <br>
+2. Prepare development database with the sql-maven-plugin: <br>
 * Change the username/password in the [pom.xml](sql/pom.xml) corresponding to your root user, configured at installation time: <br>
 ```xml
 <configuration>
@@ -31,9 +31,10 @@ git clone https://github.com/olga-dorogan/Bank.git
 * Import the data into the database<br>
 ```mvn install -Pimport-db```
 
-###Build Project###
-```mvn clean package -DskipTests=true```
 
-###Run the app(core module)###
-```mvn tomcat7:run```
+###Run the app (core module with in-memory database)###
+```mvn -Pdev clean package tomcat7:run```<br>
 After executing the command, app is available at [app](http://localhost:8080/core)
+
+###Run the app with MySql###
+```mvn -Pprod clean package tomcat7:run```
