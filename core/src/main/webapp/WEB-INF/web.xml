@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 		  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-           version="3.0">
+         version="3.0">
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
@@ -15,5 +15,21 @@
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
+
+    <context-param>
+        <param-name>contextClass</param-name>
+        <param-value>
+            org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+        </param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>com.custom.config.BankConfig</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
 
 </web-app>

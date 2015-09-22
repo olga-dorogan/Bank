@@ -1,7 +1,6 @@
 package com.custom.service.impl;
 
 import com.custom.config.DatasourceFactory;
-import com.custom.config.IoC;
 import com.custom.dao.AccountDAO;
 import com.custom.dao.TransactionDAO;
 import com.custom.entity.Account;
@@ -10,6 +9,7 @@ import com.custom.exception.BankException;
 import com.custom.model.Client;
 import com.custom.model.Transaction;
 import com.custom.service.TransactionService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -20,14 +20,10 @@ import java.util.stream.Collectors;
  * Created by olga on 18.09.15.
  */
 public class TransactionServiceImpl implements TransactionService {
+    @Autowired
     private TransactionDAO transactionDAO;
+    @Autowired
     private AccountDAO accountDAO;
-
-    public TransactionServiceImpl() {
-        IoC ioC = new IoC();
-        transactionDAO = ioC.getTransactionDAO();
-        accountDAO = ioC.getAccountDAO();
-    }
 
     @Override
     public List<Transaction> findAll() {

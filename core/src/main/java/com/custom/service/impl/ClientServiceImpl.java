@@ -1,11 +1,11 @@
 package com.custom.service.impl;
 
-import com.custom.config.IoC;
 import com.custom.dao.AccountDAO;
 import com.custom.dao.ClientDAO;
 import com.custom.model.Account;
 import com.custom.model.Client;
 import com.custom.service.ClientService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,13 +14,12 @@ import java.util.stream.Collectors;
  * Created by olga on 17.09.15.
  */
 public class ClientServiceImpl implements ClientService {
+    @Autowired
     private ClientDAO clientDAO;
+    @Autowired
     private AccountDAO accountDAO;
 
     public ClientServiceImpl() {
-        IoC ioC = new IoC();
-        clientDAO = ioC.getClientDAO();
-        accountDAO = ioC.getAccountDAO();
     }
 
     @Override

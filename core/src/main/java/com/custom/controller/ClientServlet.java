@@ -1,6 +1,5 @@
 package com.custom.controller;
 
-import com.custom.config.IoC;
 import com.custom.exception.BankDAOException;
 import com.custom.exception.BankException;
 import com.custom.model.Account;
@@ -8,7 +7,10 @@ import com.custom.model.Client;
 import com.custom.service.ClientService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,13 +24,14 @@ import java.io.PrintWriter;
  */
 @WebServlet(name = "clientServlet", urlPatterns = {"/client/*"})
 public class ClientServlet extends HttpServlet {
-
     private ClientService clientService;
 
-    public ClientServlet() {
-        super();
-        IoC ioC = new IoC();
-        clientService = ioC.getClientService();
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        ApplicationContext ctx = (ApplicationContext) config.getServletContext()
+                .getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
+        clientService = ctx.getBean(ClientService.class);
     }
 
     @Override

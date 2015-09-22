@@ -10,26 +10,35 @@ import com.custom.service.ClientService;
 import com.custom.service.TransactionService;
 import com.custom.service.impl.ClientServiceImpl;
 import com.custom.service.impl.TransactionServiceImpl;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Created by olga on 17.09.15.
  */
-public class IoC {
+@Configuration
+public class BankConfig {
+    @Bean
     public ClientDAO getClientDAO() {
         return new ClientDAOImpl();
     }
 
+    @Bean
     public AccountDAO getAccountDAO() {
         return new AccountDAOImpl();
     }
 
+    @Bean
     public TransactionDAO getTransactionDAO() {
         return new TransactionDAOImpl();
     }
 
+    @Bean
     public ClientService getClientService() {
         return new ClientServiceImpl();
     }
+
+    @Bean
     public TransactionService getTransactionService() {
         return new TransactionServiceImpl();
     }

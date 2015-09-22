@@ -8,7 +8,7 @@ angular.module('bankApp', [
         $routeProvider.otherwise({redirectTo: '/person'});
     }])
     .factory('transactionRest', function ($resource) {
-        return $resource('http://localhost:8080/transaction');
+        return $resource('transaction');
     });
 angular.module('bankApp.person', ['ngRoute', 'ngResource'])
 
@@ -124,6 +124,7 @@ angular.module('bankApp.person', ['ngRoute', 'ngResource'])
                 doTransactionByType("DEBIT", $scope.debit);
             };
             var doTransactionByType = function (type, data) {
+                console.log(JSON.stringify(data));
                 data.date = getCurrentDate();
                 data.type = type;
                 transactionRest.save(data);

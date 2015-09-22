@@ -1,12 +1,14 @@
 package com.custom.controller;
 
-import com.custom.config.IoC;
 import com.custom.exception.BankDAOException;
 import com.custom.model.Transaction;
 import com.custom.service.TransactionService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,9 +25,12 @@ import java.util.List;
 public class TransactionServlet extends HttpServlet {
     private TransactionService transactionService;
 
-    public TransactionServlet() {
-        super();
-        transactionService = new IoC().getTransactionService();
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        ApplicationContext ctx = (ApplicationContext) config.getServletContext()
+                .getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
+        transactionService = ctx.getBean(TransactionService.class);
     }
 
     @Override
