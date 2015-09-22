@@ -88,4 +88,28 @@ public class Transaction {
                 ", amount=" + amount +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Transaction that = (Transaction) o;
+
+        if (idAccountFrom != null ? !idAccountFrom.equals(that.idAccountFrom) : that.idAccountFrom != null)
+            return false;
+        if (idAccountTo != null ? !idAccountTo.equals(that.idAccountTo) : that.idAccountTo != null) return false;
+        if (date != null ? !date.equals(that.date) : that.date != null) return false;
+        return !(amount != null ? !amount.equals(that.amount) : that.amount != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = idAccountFrom != null ? idAccountFrom.hashCode() : 0;
+        result = 31 * result + (idAccountTo != null ? idAccountTo.hashCode() : 0);
+        result = 31 * result + (date != null ? date.hashCode() : 0);
+        result = 31 * result + (amount != null ? amount.hashCode() : 0);
+        return result;
+    }
 }

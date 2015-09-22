@@ -75,4 +75,25 @@ public class Account {
                 ", amount=" + amount +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Account account = (Account) o;
+
+        if (clientId != null ? !clientId.equals(account.clientId) : account.clientId != null) return false;
+        if (title != null ? !title.equals(account.title) : account.title != null) return false;
+        return !(amount != null ? !amount.equals(account.amount) : account.amount != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = clientId != null ? clientId.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (amount != null ? amount.hashCode() : 0);
+        return result;
+    }
 }

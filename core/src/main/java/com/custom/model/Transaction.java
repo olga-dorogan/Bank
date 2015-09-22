@@ -8,20 +8,6 @@ import java.util.Date;
  */
 public class Transaction {
 
-    @Override
-    public String toString() {
-        return "Transaction{" +
-                "id=" + id +
-                ", accountFrom=" + accountFrom +
-                ", accountTo=" + accountTo +
-                ", clientFrom=" + clientFrom +
-                ", clientTo=" + clientTo +
-                ", date=" + date +
-                ", amount=" + amount +
-                ", type=" + type +
-                '}';
-    }
-
     public enum TYPE {TRANSACTION, CREDIT, DEBIT}
 
     private int id;
@@ -112,5 +98,49 @@ public class Transaction {
 
     public void setClientTo(Client clientTo) {
         this.clientTo = clientTo;
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id=" + id +
+                ", accountFrom=" + accountFrom +
+                ", accountTo=" + accountTo +
+                ", clientFrom=" + clientFrom +
+                ", clientTo=" + clientTo +
+                ", date=" + date +
+                ", amount=" + amount +
+                ", type=" + type +
+                '}';
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Transaction that = (Transaction) o;
+
+        if (id != that.id) return false;
+        if (accountFrom != null ? !accountFrom.equals(that.accountFrom) : that.accountFrom != null) return false;
+        if (accountTo != null ? !accountTo.equals(that.accountTo) : that.accountTo != null) return false;
+        if (clientFrom != null ? !clientFrom.equals(that.clientFrom) : that.clientFrom != null) return false;
+        if (clientTo != null ? !clientTo.equals(that.clientTo) : that.clientTo != null) return false;
+        if (date != null ? !date.equals(that.date) : that.date != null) return false;
+        if (amount != null ? !amount.equals(that.amount) : that.amount != null) return false;
+        return type == that.type;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (accountFrom != null ? accountFrom.hashCode() : 0);
+        result = 31 * result + (accountTo != null ? accountTo.hashCode() : 0);
+        result = 31 * result + (clientFrom != null ? clientFrom.hashCode() : 0);
+        result = 31 * result + (clientTo != null ? clientTo.hashCode() : 0);
+        result = 31 * result + (date != null ? date.hashCode() : 0);
+        result = 31 * result + (amount != null ? amount.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        return result;
     }
 }

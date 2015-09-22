@@ -65,4 +65,27 @@ public class Client {
                 ", surname='" + surname + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Client client = (Client) o;
+
+        if (id != client.id) return false;
+        if (name != null ? !name.equals(client.name) : client.name != null) return false;
+        if (surname != null ? !surname.equals(client.surname) : client.surname != null) return false;
+        return !(accounts != null ? !accounts.equals(client.accounts) : client.accounts != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (surname != null ? surname.hashCode() : 0);
+        result = 31 * result + (accounts != null ? accounts.hashCode() : 0);
+        return result;
+    }
 }
