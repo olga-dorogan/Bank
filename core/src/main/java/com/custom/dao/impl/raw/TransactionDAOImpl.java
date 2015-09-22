@@ -1,6 +1,7 @@
-package com.custom.dao.impl;
+package com.custom.dao.impl.raw;
 
 import com.custom.dao.TransactionDAO;
+import com.custom.dao.util.Query;
 import com.custom.entity.Account;
 import com.custom.entity.Client;
 import com.custom.entity.Transaction;
@@ -19,42 +20,6 @@ import java.util.List;
 public class TransactionDAOImpl implements TransactionDAO {
     private enum TYPE {TRANSACTION, CREDIT, DEBIT}
 
-    private final static String SQL_FIND_ALL =
-            "SELECT id, id_account_from, id_account_to, date, amount FROM transaction";
-    private final static String SQL_INSERT =
-            "INSERT INTO transaction(id_account_from, id_account_to, date, amount) VALUES(?,?,?,?)";
-    private final static String SQL_FIND_ALL_FULL =
-            "SELECT " +
-                    "   trans_ac_from.id as id, trans_ac_from.date, trans_ac_from.account_from_title, \n" +
-                    "   trans_ac_from.client_from_id,\n" +
-                    "   trans_ac_from.client_from_name, trans_ac_from.client_from_surname,\n" +
-                    "   account.title as account_to_title, \n" +
-                    "   client.id as client_to_id,\n" +
-                    "   client.name as client_to_name, client.surname as client_to_surname,\n" +
-                    "   trans_ac_from.amount \n" +
-                    "FROM\n" +
-                    "   (SELECT \n" +
-                    "       transaction.id as id, transaction.date as date, \n" +
-                    "       client.id as client_from_id,\n" +
-                    "       client.name as client_from_name, client.surname as client_from_surname,\n" +
-                    "       account.title as account_from_title, transaction.id_account_to, transaction.amount \n" +
-                    "    FROM transaction LEFT JOIN account ON(id_account_from = account.id) \n" +
-                    "                     LEFT JOIN client ON(account.client_id = client.id)\n" +
-                    "   ) AS trans_ac_from\n" +
-                    "   LEFT JOIN account ON(trans_ac_from.id_account_to = account.id)\n" +
-                    "   LEFT JOIN client ON(account.client_id = client.id)";
-    private static final int COL_TR_ID = 1,
-            COL_TR_DATE = 2,
-            COL_TR_AC_FROM_TITLE = 3,
-            COL_TR_CLIENT_FROM_ID = 4,
-            COL_TR_CLIENT_FROM_NAME = 5,
-            COL_TR_CLIENT_FROM_SURNAME = 6,
-            COL_TR_AC_TO_TITLE = 7,
-            COL_TR_CLIENT_TO_ID = 8,
-            COL_TR_CLIENT_TO_NAME = 9,
-            COL_TR_CLIENT_TO_SURNAME = 10,
-            COL_TR_AMOUNT = 11;
-
     @Autowired
     private DataSource dataSource;
 
@@ -62,10 +27,15 @@ public class TransactionDAOImpl implements TransactionDAO {
     public List<Transaction> findAll() {
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(SQL_FIND_ALL)) {
+             ResultSet rs = stmt.executeQuery(Query.Transaction.FIND_ALL)) {
             List<Transaction> transactions = new ArrayList<>();
             while (rs.next()) {
-                transactions.add(new Transaction(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getTimestamp(4), rs.getBigDecimal(5)));
+                transactions.add(new Transaction(
+                        rs.getInt(Query.Transaction.FIND_BY_ID_ID),
+                        rs.getInt(Query.Transaction.FIND_BY_ID_ACCOUNT_FROM),
+                        rs.getInt(Query.Transaction.FIND_BY_ID_ACCOUNT_TO),
+                        rs.getTimestamp(Query.Transaction.FIND_BY_ID_DATE),
+                        rs.getBigDecimal(Query.Transaction.FIND_BY_ID_AMOUNT)));
             }
             return transactions;
         } catch (SQLException e) {
@@ -77,7 +47,7 @@ public class TransactionDAOImpl implements TransactionDAO {
     public List<TransactionFull> findAllFull() {
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(SQL_FIND_ALL_FULL)) {
+             ResultSet rs = stmt.executeQuery(Query.Transaction.FIND_ALL_FULL)) {
             List<TransactionFull> transactions = new ArrayList<>();
             Transaction transaction;
             Client clientFrom, clientTo;
@@ -85,37 +55,40 @@ public class TransactionDAOImpl implements TransactionDAO {
             String accountTitle;
             Integer clientId;
             while (rs.next()) {
-                transaction = new Transaction(rs.getInt(COL_TR_ID), rs.getTimestamp(COL_TR_DATE), rs.getBigDecimal(COL_TR_AMOUNT));
-                accountTitle = rs.getString(COL_TR_AC_FROM_TITLE);
+                transaction = new Transaction(
+                        rs.getInt(Query.Transaction.FIND_ALL_FULL_ID),
+                        rs.getTimestamp(Query.Transaction.FIND_ALL_FULL_DATE),
+                        rs.getBigDecimal(Query.Transaction.FIND_ALL_FULL_AMOUNT));
+                accountTitle = rs.getString(Query.Transaction.FIND_ALL_FULL_AC_FROM_TITLE);
                 if (accountTitle == null) {
                     accountFrom = null;
                 } else {
                     accountFrom = new Account(accountTitle);
                 }
 
-                clientId = rs.getInt(COL_TR_CLIENT_FROM_ID);
+                clientId = rs.getInt(Query.Transaction.FIND_ALL_FULL_CLIENT_FROM_ID);
                 if (rs.wasNull()) {
                     clientFrom = null;
                 } else {
                     clientFrom = new Client(
                             clientId,
-                            rs.getString(COL_TR_CLIENT_FROM_NAME),
-                            rs.getString(COL_TR_CLIENT_FROM_SURNAME));
+                            rs.getString(Query.Transaction.FIND_ALL_FULL_CLIENT_FROM_NAME),
+                            rs.getString(Query.Transaction.FIND_ALL_FULL_CLIENT_FROM_SURNAME));
                 }
-                accountTitle = rs.getString(COL_TR_AC_TO_TITLE);
+                accountTitle = rs.getString(Query.Transaction.FIND_ALL_FULL_AC_TO_TITLE);
                 if (accountTitle == null) {
                     accountTo = null;
                 } else {
                     accountTo = new Account(accountTitle);
                 }
-                clientId = rs.getInt(COL_TR_CLIENT_TO_ID);
+                clientId = rs.getInt(Query.Transaction.FIND_ALL_FULL_CLIENT_TO_ID);
                 if (rs.wasNull()) {
                     clientTo = null;
                 } else {
                     clientTo = new Client(
                             clientId,
-                            rs.getString(COL_TR_CLIENT_TO_NAME),
-                            rs.getString(COL_TR_CLIENT_TO_SURNAME));
+                            rs.getString(Query.Transaction.FIND_ALL_FULL_CLIENT_TO_NAME),
+                            rs.getString(Query.Transaction.FIND_ALL_FULL_CLIENT_TO_SURNAME));
                 }
                 TransactionFull transactionFull = new TransactionFull(transaction, clientFrom, clientTo, accountFrom, accountTo);
                 transactions.add(transactionFull);
@@ -141,8 +114,23 @@ public class TransactionDAOImpl implements TransactionDAO {
         create(conn, transaction, TYPE.DEBIT);
     }
 
+    @Override
+    public void createCredit(Transaction transaction) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void createDebit(Transaction transaction) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void createTransaction(Transaction transaction) {
+        throw new UnsupportedOperationException();
+    }
+
     private void create(Connection conn, Transaction transaction, TYPE type) {
-        try (PreparedStatement prStmt = conn.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement prStmt = conn.prepareStatement(Query.Transaction.INSERT, Statement.RETURN_GENERATED_KEYS)) {
             switch (type) {
                 case CREDIT:
                     prStmt.setNull(1, Types.INTEGER);

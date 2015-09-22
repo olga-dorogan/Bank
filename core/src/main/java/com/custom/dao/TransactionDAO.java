@@ -19,4 +19,10 @@ public interface TransactionDAO {
     void createCredit(Connection conn, Transaction transaction);
 
     void createDebit(Connection conn, Transaction transaction);
+
+    void createCredit(Transaction transaction);
+
+    void createDebit(Transaction transaction);
+
+    void createTransaction(Transaction transaction);
 }

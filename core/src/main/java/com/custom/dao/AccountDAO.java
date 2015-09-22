@@ -19,4 +19,6 @@ public interface AccountDAO {
     void create(Account account, Client client);
 
     void update(Connection conn, Account account);
+
+    void update(Account account);
 }
