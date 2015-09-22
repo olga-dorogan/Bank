@@ -1,6 +1,5 @@
 package com.custom.service.impl;
 
-import com.custom.config.DatasourceFactory;
 import com.custom.dao.AccountDAO;
 import com.custom.dao.TransactionDAO;
 import com.custom.entity.Account;
@@ -11,6 +10,7 @@ import com.custom.model.Transaction;
 import com.custom.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -24,6 +24,8 @@ public class TransactionServiceImpl implements TransactionService {
     private TransactionDAO transactionDAO;
     @Autowired
     private AccountDAO accountDAO;
+    @Autowired
+    private DataSource dataSource;
 
     @Override
     public List<Transaction> findAll() {
@@ -90,7 +92,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     private void create(Transaction transaction) {
-        try (Connection conn = DatasourceFactory.getDataSource().getConnection()) {
+        try (Connection conn = dataSource.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 

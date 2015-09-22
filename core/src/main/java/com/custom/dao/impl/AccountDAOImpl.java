@@ -1,11 +1,12 @@
 package com.custom.dao.impl;
 
-import com.custom.config.DatasourceFactory;
 import com.custom.dao.AccountDAO;
 import com.custom.entity.Account;
 import com.custom.entity.Client;
 import com.custom.exception.BankDAOException;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +21,12 @@ public class AccountDAOImpl implements AccountDAO {
     final static String SQL_INSERT_ACCOUNT = "INSERT INTO account(client_id, title, amount) VALUES(?, ?, ?)";
     final static String SQL_UPDATE_ACCOUNT = "UPDATE account SET amount=? WHERE id= ?";
 
+    @Autowired
+    private DataSource dataSource;
+
     @Override
     public List<Account> findAllForClient(Client client) {
-        try (Connection conn = DatasourceFactory.getDataSource().getConnection();
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement prStmt = conn.prepareStatement(SQL_FIND_ACCOUNTS_FOR_CLIENT)) {
             prStmt.setInt(1, client.getId());
             try (ResultSet rs = prStmt.executeQuery()) {
@@ -39,7 +43,7 @@ public class AccountDAOImpl implements AccountDAO {
 
     @Override
     public Account findById(int id) {
-        try (Connection conn = DatasourceFactory.getDataSource().getConnection()) {
+        try (Connection conn = dataSource.getConnection()) {
             return findById(conn, id);
         } catch (SQLException e) {
             throw new BankDAOException(e.getMessage(), e);
@@ -63,7 +67,7 @@ public class AccountDAOImpl implements AccountDAO {
 
     @Override
     public void create(Account account, Client client) {
-        try (Connection conn = DatasourceFactory.getDataSource().getConnection();
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement prStmt = conn.prepareStatement(SQL_INSERT_ACCOUNT, Statement.RETURN_GENERATED_KEYS)) {
             prStmt.setInt(1, client.getId());
             prStmt.setString(2, account.getTitle());

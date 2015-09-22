@@ -12,11 +12,13 @@ import com.custom.service.impl.ClientServiceImpl;
 import com.custom.service.impl.TransactionServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * Created by olga on 17.09.15.
  */
 @Configuration
+@Import(DataSourceConfig.class)
 public class BankConfig {
     @Bean
     public ClientDAO getClientDAO() {

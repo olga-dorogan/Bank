@@ -1,13 +1,14 @@
 package com.custom.dao.impl;
 
-import com.custom.config.DatasourceFactory;
 import com.custom.dao.TransactionDAO;
 import com.custom.entity.Account;
 import com.custom.entity.Client;
 import com.custom.entity.Transaction;
 import com.custom.entity.composite.TransactionFull;
 import com.custom.exception.BankDAOException;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,9 +55,12 @@ public class TransactionDAOImpl implements TransactionDAO {
             COL_TR_CLIENT_TO_SURNAME = 10,
             COL_TR_AMOUNT = 11;
 
+    @Autowired
+    private DataSource dataSource;
+
     @Override
     public List<Transaction> findAll() {
-        try (Connection conn = DatasourceFactory.getDataSource().getConnection();
+        try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(SQL_FIND_ALL)) {
             List<Transaction> transactions = new ArrayList<>();
@@ -71,7 +75,7 @@ public class TransactionDAOImpl implements TransactionDAO {
 
     @Override
     public List<TransactionFull> findAllFull() {
-        try (Connection conn = DatasourceFactory.getDataSource().getConnection();
+        try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(SQL_FIND_ALL_FULL)) {
             List<TransactionFull> transactions = new ArrayList<>();
