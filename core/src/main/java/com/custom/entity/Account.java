@@ -1,15 +1,36 @@
 package com.custom.entity;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by olga on 17.09.15.
  */
+@Entity
+@Table(name = "account")
 public class Account {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
     private Integer id;
-    private Integer clientId;
+
+    @Column(name = "title", nullable = false)
     private String title;
+
+    @Column(name = "amount", nullable = false)
     private BigDecimal amount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
+
+    @OneToMany(mappedBy = "accountFrom")
+    private List<Transaction> transactionsOut = new ArrayList<>();
+
+    @OneToMany(mappedBy = "accountTo")
+    private List<Transaction> transactionsIn = new ArrayList<>();
 
     public Account() {
 
@@ -42,14 +63,6 @@ public class Account {
         this.id = id;
     }
 
-    public Integer getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(Integer clientId) {
-        this.clientId = clientId;
-    }
-
     public BigDecimal getAmount() {
         return amount;
     }
@@ -66,11 +79,35 @@ public class Account {
         this.title = title;
     }
 
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+
+    public List<Transaction> getTransactionsOut() {
+        return transactionsOut;
+    }
+
+    public void setTransactionsOut(List<Transaction> transactionsOut) {
+        this.transactionsOut = transactionsOut;
+    }
+
+    public List<Transaction> getTransactionsIn() {
+        return transactionsIn;
+    }
+
+    public void setTransactionsIn(List<Transaction> transactionsIn) {
+        this.transactionsIn = transactionsIn;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
                 "id=" + id +
-                ", clientId=" + clientId +
                 ", title='" + title + '\'' +
                 ", amount=" + amount +
                 '}';
@@ -83,7 +120,6 @@ public class Account {
 
         Account account = (Account) o;
 
-        if (clientId != null ? !clientId.equals(account.clientId) : account.clientId != null) return false;
         if (title != null ? !title.equals(account.title) : account.title != null) return false;
         return !(amount != null ? !amount.equals(account.amount) : account.amount != null);
 
@@ -91,7 +127,7 @@ public class Account {
 
     @Override
     public int hashCode() {
-        int result = clientId != null ? clientId.hashCode() : 0;
+        int result = 0;
         result = 31 * result + (title != null ? title.hashCode() : 0);
         result = 31 * result + (amount != null ? amount.hashCode() : 0);
         return result;

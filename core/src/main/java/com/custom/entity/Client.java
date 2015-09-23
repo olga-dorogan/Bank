@@ -1,12 +1,26 @@
 package com.custom.entity;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by olga on 17.09.15.
  */
+@Entity
+@Table(name = "client")
 public class Client {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
     private Integer id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "surname")
     private String surname;
+
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE}, orphanRemoval = true)
+    private List<Account> accounts = new ArrayList<>();
 
     public Client() {
 
@@ -21,6 +35,10 @@ public class Client {
     public Client(String name, String surname) {
         this.name = name;
         this.surname = surname;
+    }
+
+    public Client(int id) {
+        this.id = id;
     }
 
     public Integer getId() {
@@ -45,6 +63,14 @@ public class Client {
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
     }
 
     @Override
@@ -74,4 +100,5 @@ public class Client {
         result = 31 * result + (surname != null ? surname.hashCode() : 0);
         return result;
     }
+
 }
