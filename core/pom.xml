@@ -85,6 +85,8 @@
                     </dependency>
                 </dependencies>
                 <configuration>
+                    <charset>UTF-8</charset>
+                    <uriEncoding>UTF-8</uriEncoding>
                     <warSourceDirectory>
                         ${project.build.directory}/${project.build.finalName}
                     </warSourceDirectory>

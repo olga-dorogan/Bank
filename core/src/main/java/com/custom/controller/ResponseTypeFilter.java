@@ -9,7 +9,7 @@ import java.io.IOException;
  */
 @WebFilter(filterName = "responseType", urlPatterns = {"/*"})
 public class ResponseTypeFilter implements Filter {
-    private static final String RESP_CONTENT_TYPE = "application/json";
+    private static final String RESP_CONTENT_TYPE = "application/json;charset=utf-8";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
