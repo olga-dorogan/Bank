@@ -19,6 +19,10 @@ public class Transaction {
     private BigDecimal amount;
     private TYPE type;
 
+    public Transaction() {
+
+    }
+
     public Transaction(int id, Account accountFrom, Account accountTo, Date date, BigDecimal amount) {
         this.id = id;
         this.accountFrom = accountFrom;

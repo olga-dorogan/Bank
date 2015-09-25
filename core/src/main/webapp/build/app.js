@@ -124,7 +124,6 @@ angular.module('bankApp.person', ['ngRoute', 'ngResource'])
                 doTransactionByType("DEBIT", $scope.debit);
             };
             var doTransactionByType = function (type, data) {
-                console.log(JSON.stringify(data));
                 data.date = getCurrentDate();
                 data.type = type;
                 transactionRest.save(data);
