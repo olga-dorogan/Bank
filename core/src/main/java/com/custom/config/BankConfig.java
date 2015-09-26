@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Import;
  * Created by olga on 17.09.15.
  */
 @Configuration
-@Import({DataSourceConfig.class, WebMvcConfig.class})
+@Import({DataSourceConfig.class, WebConfiguration.class})
 public class BankConfig {
     @Bean
     public ClientService getClientService() {

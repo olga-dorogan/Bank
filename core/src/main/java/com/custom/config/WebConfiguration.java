@@ -19,7 +19,7 @@ import java.util.List;
 @Configuration
 @EnableWebMvc
 @ComponentScan({"com.custom.controller"})
-public class WebMvcConfig extends WebMvcConfigurerAdapter {
+public class WebConfiguration extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/build/**").addResourceLocations("/build/");
