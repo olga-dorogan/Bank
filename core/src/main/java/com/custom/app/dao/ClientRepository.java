@@ -1,6 +1,6 @@
-package com.custom.dao;
+package com.custom.app.dao;
 
-import com.custom.entity.Client;
+import com.custom.app.model.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

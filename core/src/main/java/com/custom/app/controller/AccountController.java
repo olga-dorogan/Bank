@@ -1,8 +1,8 @@
-package com.custom.controller;
+package com.custom.app.controller;
 
-import com.custom.model.Account;
-import com.custom.model.Client;
-import com.custom.service.ClientService;
+import com.custom.app.dto.Account;
+import com.custom.app.dto.Client;
+import com.custom.app.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

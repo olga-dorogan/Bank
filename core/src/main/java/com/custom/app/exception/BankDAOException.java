@@ -1,4 +1,4 @@
-package com.custom.exception;
+package com.custom.app.exception;
 
 /**
  * Created by olga on 17.09.15.

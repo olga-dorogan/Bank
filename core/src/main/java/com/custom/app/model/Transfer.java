@@ -1,4 +1,4 @@
-package com.custom.entity;
+package com.custom.app.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -8,12 +8,8 @@ import java.util.Date;
  * Created by olga on 18.09.15.
  */
 @Entity
-@Table(name = "transaction")
-public class Transaction {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Integer id;
+@Table(name = "transfer")
+public class Transfer extends AbstractEntity {
 
     @Column(name = "date", nullable = false)
     private Date date;
@@ -30,29 +26,20 @@ public class Transaction {
     private Account accountTo;
 
 
-    public Transaction() {
+    public Transfer() {
 
     }
 
-    public Transaction(Integer id, Date date, BigDecimal amount) {
-        this.id = id;
+    public Transfer(Date date, BigDecimal amount) {
         this.date = date;
         this.amount = amount;
     }
 
-    public Transaction(Account accountFrom, Account accountTo, Date date, BigDecimal amount) {
+    public Transfer(Account accountFrom, Account accountTo, Date date, BigDecimal amount) {
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
         this.date = date;
         this.amount = amount;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public BigDecimal getAmount() {
@@ -91,29 +78,9 @@ public class Transaction {
     @Override
     public String toString() {
         return "Transaction{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", date=" + date +
                 ", amount=" + amount +
                 '}';
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Transaction that = (Transaction) o;
-        if (date != null ? !date.equals(that.date) : that.date != null) return false;
-        return !(amount != null ? !amount.equals(that.amount) : that.amount != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = 0;
-        result = 31 * result + (date != null ? date.hashCode() : 0);
-        result = 31 * result + (amount != null ? amount.hashCode() : 0);
-        return result;
-    }
-
 }

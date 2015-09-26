@@ -1,9 +1,9 @@
 package com.custom.config;
 
-import com.custom.service.ClientService;
-import com.custom.service.TransactionService;
-import com.custom.service.impl.ClientServiceImpl;
-import com.custom.service.impl.TransactionServiceImpl;
+import com.custom.app.service.ClientService;
+import com.custom.app.service.TransferService;
+import com.custom.app.service.impl.ClientServiceImpl;
+import com.custom.app.service.impl.TransferServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -20,8 +20,8 @@ public class BankConfig {
     }
 
     @Bean
-    public TransactionService getTransactionService() {
-        return new TransactionServiceImpl();
+    public TransferService getTransactionService() {
+        return new TransferServiceImpl();
     }
 
 }

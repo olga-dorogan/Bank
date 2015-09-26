@@ -1,8 +1,8 @@
-package com.custom.controller;
+package com.custom.app.controller;
 
-import com.custom.exception.BankDAOException;
-import com.custom.model.Transaction;
-import com.custom.service.TransactionService;
+import com.custom.app.exception.BankDAOException;
+import com.custom.app.dto.Transfer;
+import com.custom.app.service.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,27 +14,27 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/transaction")
-public class TransactionController {
+public class TransferController {
     @Autowired
-    private TransactionService transactionService;
+    private TransferService transferService;
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public List<Transaction> findAll() {
-        return transactionService.findAll();
+    public List<Transfer> findAll() {
+        return transferService.findAll();
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
-    public void save(@RequestBody Transaction transaction) {
-        switch (transaction.getType()) {
+    public void save(@RequestBody Transfer transfer) {
+        switch (transfer.getType()) {
             case TRANSACTION:
-                transactionService.createTransaction(transaction);
+                transferService.createTransaction(transfer);
                 break;
             case CREDIT:
-                transactionService.creditAccount(transaction);
+                transferService.creditAccount(transfer);
                 break;
             case DEBIT:
-                transactionService.debitAccount(transaction);
+                transferService.debitAccount(transfer);
                 break;
             default:
                 throw new BankDAOException(new UnsupportedOperationException());

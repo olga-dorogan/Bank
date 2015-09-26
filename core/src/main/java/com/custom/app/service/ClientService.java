@@ -1,7 +1,7 @@
-package com.custom.service;
+package com.custom.app.service;
 
-import com.custom.model.Account;
-import com.custom.model.Client;
+import com.custom.app.dto.Account;
+import com.custom.app.dto.Client;
 
 import java.util.List;
 

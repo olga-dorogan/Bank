@@ -1,4 +1,4 @@
-package com.custom.entity;
+package com.custom.app.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,11 +9,8 @@ import java.util.List;
  */
 @Entity
 @Table(name = "client")
-public class Client {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+public class Client extends AbstractEntity {
+
     @Column(name = "name")
     private String name;
     @Column(name = "surname")
@@ -26,27 +23,9 @@ public class Client {
 
     }
 
-    public Client(Integer id, String name, String surname) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-    }
-
     public Client(String name, String surname) {
         this.name = name;
         this.surname = surname;
-    }
-
-    public Client(int id) {
-        this.id = id;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -76,29 +55,9 @@ public class Client {
     @Override
     public String toString() {
         return "Client{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 '}';
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Client client = (Client) o;
-
-        if (name != null ? !name.equals(client.name) : client.name != null) return false;
-        return !(surname != null ? !surname.equals(client.surname) : client.surname != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (surname != null ? surname.hashCode() : 0);
-        return result;
-    }
-
 }

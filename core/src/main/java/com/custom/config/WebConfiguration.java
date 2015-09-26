@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Configuration
 @EnableWebMvc
-@ComponentScan({"com.custom.controller"})
+@ComponentScan({"com.custom.app.controller"})
 public class WebConfiguration extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

@@ -1,10 +1,10 @@
-package com.custom.service.impl;
+package com.custom.app.service.impl;
 
-import com.custom.dao.AccountRepository;
-import com.custom.dao.ClientRepository;
-import com.custom.entity.Client;
-import com.custom.model.Account;
-import com.custom.service.ClientService;
+import com.custom.app.dao.AccountRepository;
+import com.custom.app.dao.ClientRepository;
+import com.custom.app.model.Client;
+import com.custom.app.dto.Account;
+import com.custom.app.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,18 +21,18 @@ public class ClientServiceImpl implements ClientService {
     private AccountRepository accountRepository;
 
     @Override
-    public List<com.custom.model.Client> findAll() {
+    public List<com.custom.app.dto.Client> findAll() {
         List<Client> clientEntities = clientRepository.findAll();
         return clientEntities
                 .stream()
-                .map(entity -> new com.custom.model.Client(entity.getId(), entity.getName(), entity.getSurname()))
+                .map(entity -> new com.custom.app.dto.Client(entity.getId(), entity.getName(), entity.getSurname()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Account> findAllAccountsByClientId(int clientId) {
         Client clientEntity = clientRepository.findOne(clientId);
-        List<com.custom.entity.Account> accountEntities = clientEntity.getAccounts();
+        List<com.custom.app.model.Account> accountEntities = clientEntity.getAccounts();
         return accountEntities
                 .stream()
                 .map(entity -> new Account(entity.getId(), entity.getTitle(), entity.getAmount()))
@@ -41,10 +41,10 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public com.custom.model.Client findClientWithAccounts(int clientId) {
+    public com.custom.app.dto.Client findClientWithAccounts(int clientId) {
         Client clientEntity = clientRepository.findOne(clientId);
-        com.custom.model.Client client = new com.custom.model.Client(clientId, clientEntity.getName(), clientEntity.getSurname());
-        List<com.custom.entity.Account> accountEntities = clientEntity.getAccounts();
+        com.custom.app.dto.Client client = new com.custom.app.dto.Client(clientId, clientEntity.getName(), clientEntity.getSurname());
+        List<com.custom.app.model.Account> accountEntities = clientEntity.getAccounts();
         List<Account> accounts = accountEntities
                 .stream()
                 .map(entity -> new Account(entity.getId(), entity.getTitle(), entity.getAmount()))
@@ -54,16 +54,16 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void create(com.custom.model.Client client) {
+    public void create(com.custom.app.dto.Client client) {
         Client savedClient = clientRepository.save(new Client(client.getName(), client.getSurname()));
         client.setId(savedClient.getId());
     }
 
     @Override
     public void createAccount(Account account) {
-        com.custom.entity.Account accountEntity = new com.custom.entity.Account(account.getTitle());
+        com.custom.app.model.Account accountEntity = new com.custom.app.model.Account(account.getTitle());
         accountEntity.setAmount(account.getAmount());
-        accountEntity.setClient(new Client(account.getClient().getId()));
+        accountEntity.setClient(clientRepository.findOne(account.getClient().getId()));
         accountRepository.save(accountEntity);
     }
 }

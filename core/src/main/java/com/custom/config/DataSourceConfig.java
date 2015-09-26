@@ -18,7 +18,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = {"com.custom.dao"})
+@EnableJpaRepositories(basePackages = {"com.custom.app.dao"})
 public class DataSourceConfig {
     private final static String DATASOURCE_JNDI = "java:comp/env/jdbc/bankDS";
 
@@ -37,7 +37,7 @@ public class DataSourceConfig {
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("com.custom.entity");
+        factory.setPackagesToScan("com.custom.app.model");
         factory.setDataSource(dataSource());
         factory.afterPropertiesSet();
 
