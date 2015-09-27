@@ -1,0 +1,4 @@
+<dataset>
+    <client firstName="firstName" lastName="lastName" passport="ЕР000000"/>
+    <client firstName="Ivan" lastName="Ivanov" passport="ЕР123456"/>
+</dataset>
