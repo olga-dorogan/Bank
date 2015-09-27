@@ -24,7 +24,7 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional
     public List<Transfer> findAll() {
-        List<com.custom.app.model.Transfer> transferEntities = transferRepository.findAll();
+        List<com.custom.app.entity.Transfer> transferEntities = transferRepository.findAll();
         return transferEntities
                 .stream()
                 .map(entity -> {
@@ -63,13 +63,13 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional
     public void createTransaction(Transfer transfer) {
-        com.custom.app.model.Account accountFrom = accountRepository.findOne(transfer.getAccountFrom().getId());
+        com.custom.app.entity.Account accountFrom = accountRepository.findOne(transfer.getAccountFrom().getId());
         accountFrom.setAmount(accountFrom.getAmount().subtract(transfer.getAmount()));
         accountRepository.save(accountFrom);
-        com.custom.app.model.Account accountTo = accountRepository.findOne(transfer.getAccountTo().getId());
+        com.custom.app.entity.Account accountTo = accountRepository.findOne(transfer.getAccountTo().getId());
         accountTo.setAmount(accountTo.getAmount().add(transfer.getAmount()));
         accountRepository.save(accountTo);
-        transferRepository.save(new com.custom.app.model.Transfer(
+        transferRepository.save(new com.custom.app.entity.Transfer(
                 accountFrom,
                 accountTo,
                 transfer.getDate(),
@@ -80,10 +80,10 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional
     public void creditAccount(Transfer transfer) {
-        com.custom.app.model.Account accountTo = accountRepository.findOne(transfer.getAccountTo().getId());
+        com.custom.app.entity.Account accountTo = accountRepository.findOne(transfer.getAccountTo().getId());
         accountTo.setAmount(accountTo.getAmount().add(transfer.getAmount()));
         accountRepository.save(accountTo);
-        transferRepository.save(new com.custom.app.model.Transfer(
+        transferRepository.save(new com.custom.app.entity.Transfer(
                 null,
                 accountTo,
                 transfer.getDate(),
@@ -94,10 +94,10 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional
     public void debitAccount(Transfer transfer) {
-        com.custom.app.model.Account accountFrom = accountRepository.findOne(transfer.getAccountFrom().getId());
+        com.custom.app.entity.Account accountFrom = accountRepository.findOne(transfer.getAccountFrom().getId());
         accountFrom.setAmount(accountFrom.getAmount().subtract(transfer.getAmount()));
         accountRepository.save(accountFrom);
-        transferRepository.save(new com.custom.app.model.Transfer(
+        transferRepository.save(new com.custom.app.entity.Transfer(
                 accountFrom,
                 null,
                 transfer.getDate(),

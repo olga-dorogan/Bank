@@ -1,4 +1,4 @@
-package com.custom.app.model;
+package com.custom.app.entity;
 
 import javax.persistence.*;
 import java.util.ArrayList;

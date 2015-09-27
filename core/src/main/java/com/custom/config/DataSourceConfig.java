@@ -37,7 +37,7 @@ public class DataSourceConfig {
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("com.custom.app.model");
+        factory.setPackagesToScan("com.custom.app.entity");
         factory.setDataSource(dataSource());
         factory.afterPropertiesSet();
 

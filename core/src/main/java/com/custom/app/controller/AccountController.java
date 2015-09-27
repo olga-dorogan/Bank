@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * Created by olga on 24.09.15.
  */
@@ -17,8 +19,8 @@ public class AccountController {
     private ClientService clientService;
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public Client findClientWithAccounts(@PathVariable Integer clientId) {
-        return clientService.findClientWithAccounts(clientId);
+    public List<Account> findClientWithAccounts(@PathVariable Integer clientId) {
+        return clientService.findAllAccountsByClientId(clientId);
     }
 
     @ResponseStatus(HttpStatus.CREATED)

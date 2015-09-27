@@ -1,4 +1,4 @@
-package com.custom.app.model;
+package com.custom.app.entity;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -11,7 +11,7 @@ import java.util.UUID;
 @MappedSuperclass
 public class AbstractEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @Version
