@@ -8,6 +8,7 @@ import com.custom.app.dto.Transfer;
 import com.custom.app.service.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -63,8 +64,8 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    @Transactional
-    public void createTransaction(Transfer transfer) {
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public void createTransfer(Transfer transfer) {
         com.custom.app.entity.Account accountFrom = accountRepository.findOne(transfer.getAccountFrom().getId());
         accountFrom.setAmount(accountFrom.getAmount().subtract(transfer.getAmount()));
         accountRepository.save(accountFrom);
@@ -80,7 +81,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void creditAccount(Transfer transfer) {
         com.custom.app.entity.Account accountTo = accountRepository.findOne(transfer.getAccountTo().getId());
         accountTo.setAmount(accountTo.getAmount().add(transfer.getAmount()));
@@ -94,7 +95,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void debitAccount(Transfer transfer) {
         com.custom.app.entity.Account accountFrom = accountRepository.findOne(transfer.getAccountFrom().getId());
         accountFrom.setAmount(accountFrom.getAmount().subtract(transfer.getAmount()));

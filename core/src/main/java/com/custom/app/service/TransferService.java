@@ -10,7 +10,7 @@ import java.util.List;
 public interface TransferService {
     List<Transfer> findAll();
 
-    void createTransaction(Transfer transfer);
+    void createTransfer(Transfer transfer);
 
     void creditAccount(Transfer transfer);
 

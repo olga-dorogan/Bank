@@ -28,7 +28,7 @@ public class TransferController {
     public void save(@RequestBody Transfer transfer) {
         switch (transfer.getType()) {
             case TRANSACTION:
-                transferService.createTransaction(transfer);
+                transferService.createTransfer(transfer);
                 break;
             case CREDIT:
                 transferService.creditAccount(transfer);
