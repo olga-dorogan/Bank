@@ -9,7 +9,10 @@ import java.util.List;
  * Created by olga on 17.09.15.
  */
 @Entity
-@Table(name = "account")
+@Table(
+        name = "account",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"client_id", "title"})
+)
 public class Account extends AbstractEntity {
 
     @Column(name = "title", nullable = false)

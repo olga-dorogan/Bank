@@ -7,6 +7,7 @@ import com.custom.app.dto.Client;
 import com.custom.app.dto.Transfer;
 import com.custom.app.service.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 /**
  * Created by olga on 23.09.15.
  */
+@Service
 public class TransferServiceImpl implements TransferService {
     @Autowired
     private TransferRepository transferRepository;
@@ -36,8 +38,8 @@ public class TransferServiceImpl implements TransferService {
                                 entity.getAccountFrom().getAmount());
                         accountFrom.setClient(new Client(
                                 entity.getAccountFrom().getClient().getId(),
-                                entity.getAccountFrom().getClient().getName(),
-                                entity.getAccountFrom().getClient().getSurname()
+                                entity.getAccountFrom().getClient().getFirstName(),
+                                entity.getAccountFrom().getClient().getLastName()
                         ));
                         transfer.setAccountFrom(accountFrom);
                         transfer.setClientFrom(accountFrom.getClient());
@@ -49,8 +51,8 @@ public class TransferServiceImpl implements TransferService {
                                 entity.getAccountTo().getAmount());
                         accountTo.setClient(new Client(
                                 entity.getAccountTo().getClient().getId(),
-                                entity.getAccountTo().getClient().getName(),
-                                entity.getAccountTo().getClient().getSurname()
+                                entity.getAccountTo().getClient().getFirstName(),
+                                entity.getAccountTo().getClient().getLastName()
                         ));
                         transfer.setAccountTo(accountTo);
                         transfer.setClientTo(accountTo.getClient());

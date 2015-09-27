@@ -1,5 +1,7 @@
 package com.custom.app.entity;
 
+import org.hibernate.annotations.Check;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -8,13 +10,18 @@ import java.util.Date;
  * Created by olga on 18.09.15.
  */
 @Entity
-@Table(name = "transfer")
+@Table(
+        name = "transfer",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"date", "account_from", "account_to"})
+)
+@Check(constraints = "account_from != account_to")
 public class Transfer extends AbstractEntity {
 
     @Column(name = "date", nullable = false)
     private Date date;
 
     @Column(name = "amount", nullable = false)
+    @Check(constraints = "amount >= 0")
     private BigDecimal amount;
 
     @ManyToOne(fetch = FetchType.LAZY)

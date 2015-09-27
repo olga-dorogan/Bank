@@ -7,22 +7,36 @@ import java.util.List;
  */
 public class Client {
     private int id;
-    private String name;
-    private String surname;
+    private String firstName;
+    private String lastName;
+    private String passport;
     private List<Account> accounts;
 
     public Client() {
 
     }
 
-    public Client(int id, String name, String surname) {
+    public Client(int id, String firstName, String lastName) {
         this.id = id;
-        this.name = name;
-        this.surname = surname;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public Client(int id) {
         this.id = id;
+    }
+
+    public Client(Integer id, String firstName, String lastName, String passport) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.passport = passport;
+    }
+
+    public Client(String firstName, String lastName, String passport) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.passport = passport;
     }
 
     public int getId() {
@@ -33,20 +47,20 @@ public class Client {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public List<Account> getAccounts() {
@@ -57,12 +71,47 @@ public class Client {
         this.accounts = accounts;
     }
 
+    public String getPassport() {
+        return passport;
+    }
+
+    public void setPassport(String passport) {
+        this.passport = passport;
+    }
+
     @Override
     public String toString() {
         return "Client{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", passport='" + passport + '\'' +
+                ", accounts=" + accounts +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Client client = (Client) o;
+
+        if (id != client.id) return false;
+        if (firstName != null ? !firstName.equals(client.firstName) : client.firstName != null) return false;
+        if (lastName != null ? !lastName.equals(client.lastName) : client.lastName != null) return false;
+        if (passport != null ? !passport.equals(client.passport) : client.passport != null) return false;
+        return !(accounts != null ? !accounts.equals(client.accounts) : client.accounts != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+        result = 31 * result + (passport != null ? passport.hashCode() : 0);
+        result = 31 * result + (accounts != null ? accounts.hashCode() : 0);
+        return result;
     }
 }
