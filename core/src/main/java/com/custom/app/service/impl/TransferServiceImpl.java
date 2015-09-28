@@ -9,8 +9,10 @@ import com.custom.app.service.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,8 +66,11 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
     public void createTransfer(Transfer transfer) {
+        if (transfer.getAccountFrom() == null || transfer.getAccountTo() == null) {
+            throw new IllegalArgumentException("Both accounts must be set");
+        }
         com.custom.app.entity.Account accountFrom = accountRepository.findOne(transfer.getAccountFrom().getId());
         accountFrom.setAmount(accountFrom.getAmount().subtract(transfer.getAmount()));
         accountRepository.save(accountFrom);
@@ -81,9 +86,15 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
     public void creditAccount(Transfer transfer) {
+        if (transfer.getAccountFrom() != null) {
+            throw new IllegalArgumentException("Credit operation must not have source account");
+        }
         com.custom.app.entity.Account accountTo = accountRepository.findOne(transfer.getAccountTo().getId());
+        if (accountTo == null) {
+            throw new EntityNotFoundException(String.format("Account with id = %d was not found", transfer.getAccountTo().getId()));
+        }
         accountTo.setAmount(accountTo.getAmount().add(transfer.getAmount()));
         accountRepository.save(accountTo);
         transferRepository.save(new com.custom.app.entity.Transfer(
@@ -95,9 +106,15 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
     public void debitAccount(Transfer transfer) {
+        if (transfer.getAccountTo() != null) {
+            throw new IllegalArgumentException("Debit operation must not have target account");
+        }
         com.custom.app.entity.Account accountFrom = accountRepository.findOne(transfer.getAccountFrom().getId());
+        if (accountFrom == null) {
+            throw new EntityNotFoundException(String.format("Account with id = %d was not found", transfer.getAccountFrom().getId()));
+        }
         accountFrom.setAmount(accountFrom.getAmount().subtract(transfer.getAmount()));
         accountRepository.save(accountFrom);
         transferRepository.save(new com.custom.app.entity.Transfer(

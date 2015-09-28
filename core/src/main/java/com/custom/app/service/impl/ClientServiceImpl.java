@@ -43,20 +43,6 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    @Transactional
-    public com.custom.app.dto.Client findClientWithAccounts(int clientId) {
-        com.custom.app.entity.Client clientEntity = clientRepository.findOne(clientId);
-        com.custom.app.dto.Client client = new com.custom.app.dto.Client(clientId, clientEntity.getFirstName(), clientEntity.getLastName());
-        List<com.custom.app.entity.Account> accountEntities = clientEntity.getAccounts();
-        List<Account> accounts = accountEntities
-                .stream()
-                .map(entity -> new Account(entity.getId(), entity.getTitle(), entity.getAmount()))
-                .collect(Collectors.toList());
-        client.setAccounts(accounts);
-        return client;
-    }
-
-    @Override
     public void create(Client client) {
         com.custom.app.entity.Client savedClient = clientRepository.saveAndFlush(
                 new com.custom.app.entity.Client(client.getFirstName(), client.getLastName(), client.getPassport()));
@@ -64,11 +50,12 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    @Transactional
     public void createAccount(Account account) {
         com.custom.app.entity.Account accountEntity = new com.custom.app.entity.Account(account.getTitle());
         accountEntity.setAmount(account.getAmount());
         accountEntity.setClient(clientRepository.findOne(account.getClient().getId()));
-        accountRepository.saveAndFlush(accountEntity);
+        accountRepository.save(accountEntity);
         account.setId(accountEntity.getId());
     }
 }

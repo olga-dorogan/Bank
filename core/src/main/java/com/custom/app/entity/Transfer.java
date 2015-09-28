@@ -12,7 +12,10 @@ import java.util.Date;
 @Entity
 @Table(
         name = "transfer",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"date", "account_from", "account_to"})
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"date", "account_from"}),
+                @UniqueConstraint(columnNames = {"date", "account_to"})
+        }
 )
 @Check(constraints = "account_from != account_to")
 public class Transfer extends AbstractEntity {

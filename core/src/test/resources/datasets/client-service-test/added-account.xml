@@ -1,0 +1,4 @@
+<dataset>
+    <account client_id="-1" title="test_account" amount="1000.00"/>
+    <account client_id="-1" title="added_account" amount="2000.00"/>
+</dataset>

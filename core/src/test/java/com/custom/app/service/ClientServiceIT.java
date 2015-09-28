@@ -13,6 +13,7 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -49,9 +50,7 @@ import static org.junit.Assert.assertNotNull;
         "/datasets/client-service-test/one-client.xml",
         "/datasets/client-service-test/one-account.xml"})
 public class ClientServiceIT {
-    private static final Client PREDEFINED_CLIENT = new Client(-1, "Ivan", "Ivanov", "ЕР123456");
-    private static final Client ADDED_CLIENT = new Client(1, "firstName", "lastName", "ЕР000000");
-    private static final Account PREDEFINED_ACCOUNT = new Account(-1, "test_account", new BigDecimal(1000.00));
+
 
     @Autowired
     private ClientService clientService;
@@ -66,22 +65,22 @@ public class ClientServiceIT {
         List<Client> clients = clientService.findAll();
         assertThat(clients.size(), is(1));
         assertThat(clients.get(0), allOf(
-                hasProperty("id", is(PREDEFINED_CLIENT.getId())),
-                hasProperty("firstName", is(PREDEFINED_CLIENT.getFirstName())),
-                hasProperty("lastName", is(PREDEFINED_CLIENT.getLastName())),
-                hasProperty("passport", is(PREDEFINED_CLIENT.getPassport()))));
+                hasProperty("id", is(TestData.PREDEFINED_CLIENT.getId())),
+                hasProperty("firstName", is(TestData.PREDEFINED_CLIENT.getFirstName())),
+                hasProperty("lastName", is(TestData.PREDEFINED_CLIENT.getLastName())),
+                hasProperty("passport", is(TestData.PREDEFINED_CLIENT.getPassport()))));
     }
 
     @Test
     @ExpectedDatabase(value = Datasets.AFTER_ADDED_CLIENT, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testCreate() {
-        clientService.create(ADDED_CLIENT);
+        clientService.create(TestData.ADDED_CLIENT);
     }
 
     @Test(expected = PersistenceException.class)
     @ExpectedDatabase(value = Datasets.ONE_CLIENT, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testCreateClientWithDuplicatePassportShouldThrowException() {
-        Client client = new Client("someName", "someSurname", PREDEFINED_CLIENT.getPassport());
+        Client client = new Client("someName", "someSurname", TestData.PREDEFINED_CLIENT.getPassport());
         clientService.create(client);
     }
 
@@ -89,8 +88,8 @@ public class ClientServiceIT {
     @ExpectedDatabase(value = Datasets.ONE_CLIENT, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testCreateClientWithoutFirstNamePassportShouldThrowException() {
         Client client = new Client();
-        client.setLastName(ADDED_CLIENT.getLastName());
-        client.setPassport(ADDED_CLIENT.getPassport());
+        client.setLastName(TestData.ADDED_CLIENT.getLastName());
+        client.setPassport(TestData.ADDED_CLIENT.getPassport());
         clientService.create(client);
     }
 
@@ -98,23 +97,54 @@ public class ClientServiceIT {
     @ExpectedDatabase(value = Datasets.ONE_CLIENT, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testCreateClientWithoutLastNamePassportShouldThrowException() {
         Client client = new Client();
-        client.setFirstName(ADDED_CLIENT.getFirstName());
-        client.setPassport(ADDED_CLIENT.getPassport());
+        client.setFirstName(TestData.ADDED_CLIENT.getFirstName());
+        client.setPassport(TestData.ADDED_CLIENT.getPassport());
         clientService.create(client);
     }
 
     @Test
     public void testFindAllAccountsByClientId() {
-        List<Account> accounts = clientService.findAllAccountsByClientId(PREDEFINED_CLIENT.getId());
+        List<Account> accounts = clientService.findAllAccountsByClientId(TestData.PREDEFINED_CLIENT.getId());
         assertThat(accounts.size(), is(1));
         assertThat(accounts.get(0), allOf(
-                hasProperty("id", is(PREDEFINED_ACCOUNT.getId())),
-                hasProperty("title", is(PREDEFINED_ACCOUNT.getTitle())),
-                hasProperty("amount", comparesEqualTo(PREDEFINED_ACCOUNT.getAmount()))));
+                hasProperty("id", is(TestData.PREDEFINED_ACCOUNT.getId())),
+                hasProperty("title", is(TestData.PREDEFINED_ACCOUNT.getTitle())),
+                hasProperty("amount", comparesEqualTo(TestData.PREDEFINED_ACCOUNT.getAmount()))));
+    }
+
+    @Test
+    @ExpectedDatabase(value = Datasets.AFTER_ADDED_ACCOUNT, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void testCreateAccount() {
+        clientService.createAccount(TestData.ADDED_ACCOUNT);
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    @ExpectedDatabase(value = Datasets.ONE_ACCOUNT, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void testCreateAccountWithDuplicateTitleShouldThrowException() {
+        Account account = new Account(TestData.PREDEFINED_ACCOUNT.getTitle(), new BigDecimal(3000), TestData.PREDEFINED_CLIENT);
+        clientService.createAccount(account);
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    @ExpectedDatabase(value = Datasets.ONE_ACCOUNT, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void testCreateAccountWithNegativeAmountShouldThrowException() {
+        Account account = new Account("bad account", new BigDecimal(-100), TestData.PREDEFINED_CLIENT);
+        clientService.createAccount(account);
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    @ExpectedDatabase(value = Datasets.ONE_ACCOUNT, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void testCreateAccountWithoutTitleShouldThrowException() {
+        Account account = new Account();
+        account.setAmount(new BigDecimal(1000));
+        account.setClient(TestData.PREDEFINED_CLIENT);
+        clientService.createAccount(account);
     }
 
     private static final class Datasets {
         private static final String ONE_CLIENT = "/datasets/client-service-test/one-client.xml";
+        private static final String ONE_ACCOUNT = "/datasets/client-service-test/one-account.xml";
         private static final String AFTER_ADDED_CLIENT = "/datasets/client-service-test/added-client.xml";
+        private static final String AFTER_ADDED_ACCOUNT = "/datasets/client-service-test/added-account.xml";
     }
 }

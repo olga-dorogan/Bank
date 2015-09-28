@@ -1,0 +1,7 @@
+<dataset>
+    <transfer account_from="-1" account_to="-2" date="2015-09-01 04:00:00" amount="500"/>
+    <transfer account_from="-1" account_to="-2" date="2015-09-01 03:00:00" amount="500"/>
+
+    <account id="-1" client_id="-1" title="1_account" amount="500.00"/>
+    <account id="-2" client_id="-1" title="2_account" amount="1500.00"/>
+</dataset>

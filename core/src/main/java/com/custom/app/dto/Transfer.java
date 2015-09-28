@@ -7,7 +7,6 @@ import java.util.Date;
  * Created by olga on 18.09.15.
  */
 public class Transfer {
-
     public enum TYPE {TRANSACTION, CREDIT, DEBIT}
 
     private int id;
@@ -25,6 +24,14 @@ public class Transfer {
 
     public Transfer(int id, Account accountFrom, Account accountTo, Date date, BigDecimal amount) {
         this.id = id;
+        this.accountFrom = accountFrom;
+        this.accountTo = accountTo;
+        this.date = date;
+        this.amount = amount;
+    }
+
+
+    public Transfer(Account accountFrom, Account accountTo, Date date, BigDecimal amount) {
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
         this.date = date;

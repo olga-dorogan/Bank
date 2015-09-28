@@ -1,5 +1,7 @@
 package com.custom.app.entity;
 
+import org.hibernate.annotations.Check;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.List;
         name = "account",
         uniqueConstraints = @UniqueConstraint(columnNames = {"client_id", "title"})
 )
+@Check(constraints = "amount >= 0")
 public class Account extends AbstractEntity {
 
     @Column(name = "title", nullable = false)

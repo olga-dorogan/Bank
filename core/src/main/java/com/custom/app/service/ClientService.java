@@ -13,8 +13,6 @@ public interface ClientService {
 
     List<Account> findAllAccountsByClientId(int clientId);
 
-    Client findClientWithAccounts(int clientId);
-
     void create(Client client);
 
     void createAccount(Account account);

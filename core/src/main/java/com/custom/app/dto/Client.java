@@ -100,8 +100,7 @@ public class Client {
         if (id != client.id) return false;
         if (firstName != null ? !firstName.equals(client.firstName) : client.firstName != null) return false;
         if (lastName != null ? !lastName.equals(client.lastName) : client.lastName != null) return false;
-        if (passport != null ? !passport.equals(client.passport) : client.passport != null) return false;
-        return !(accounts != null ? !accounts.equals(client.accounts) : client.accounts != null);
+        return  (passport != null ? !passport.equals(client.passport) : client.passport != null);
 
     }
 
@@ -111,7 +110,6 @@ public class Client {
         result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (passport != null ? passport.hashCode() : 0);
-        result = 31 * result + (accounts != null ? accounts.hashCode() : 0);
         return result;
     }
 }
