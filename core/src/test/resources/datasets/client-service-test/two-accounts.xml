@@ -1,0 +1,4 @@
+<dataset>
+    <account id="-1" client_id="-1" title="1_account" amount="1000.00" version="1"/>
+    <account id="-2" client_id="-1" title="2_account" amount="1000.00" version="1"/>
+</dataset>

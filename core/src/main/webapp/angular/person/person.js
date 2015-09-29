@@ -26,17 +26,17 @@ angular.module('bankApp.person', ['ngRoute', 'ngResource'])
     .controller('AccountCtrl', [
         '$routeParams', '$route', '$scope', 'accountRest', 'transactionRest',
         function ($routeParams, $route, $scope, accountRest, transactionRest) {
-            accountRest.get({id: $routeParams.clientId}, function (data) {
-                $scope.accounts = data.accounts;
-                $scope.client.name = data.name;
-                $scope.client.surname = data.surname;
+            accountRest.query({id: $routeParams.clientId}, function (data) {
+                $scope.accounts = data;
+                //$scope.client.name = data.name;
+                //$scope.client.surname = data.surname;
 
-                $scope.transaction.accountFrom.id = getIdOfBestAccount(data.accounts);
-                $scope.transaction.accountTo.id = getIdOfWorstAccount(data.accounts);
+                $scope.transaction.accountFrom.id = getIdOfBestAccount($scope.accounts);
+                $scope.transaction.accountTo.id = getIdOfWorstAccount($scope.accounts);
                 $scope.transaction.amount = 0;
 
-                $scope.credit.accountTo.id = getIdOfWorstAccount(data.accounts);
-                $scope.debit.accountFrom.id = getIdOfBestAccount(data.accounts);
+                $scope.credit.accountTo.id = getIdOfWorstAccount($scope.accounts);
+                $scope.debit.accountFrom.id = getIdOfBestAccount($scope.accounts);
                 $scope.credit.amount = 0;
                 $scope.debit.amount = 0;
 
