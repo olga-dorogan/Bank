@@ -11,6 +11,8 @@ import java.util.List;
 public interface ClientService {
     List<Client> findAll();
 
+    Client findById(int clientId);
+
     List<Account> findAllAccountsByClientId(int clientId);
 
     void create(Client client);

@@ -1,16 +1,28 @@
 <div>
+    <div class="pull-right">
+        <label class="form-group">
+            <input type="text" ng-model="search" class="form-control input-sm" placeholder="Найти по паспорту"
+                   ng-change="searchByPassport()">
+        </label>
+    </div>
     <table class="table table-hover table-bordered table-condensed">
         <thead>
         <tr>
-            <td class="col-md-1 text-center">#</td>
-            <td class="col-md-2 text-center">Фамилия</td>
-            <td class="col-md-2 text-center">Имя</td>
-            <td class="col-md-2 text-center">Серия и номер паспорта</td>
-            <td class="col-md-2 text-center">Перейти к счетам</td>
+            <th class="col-md-1 text-center">#</th>
+            <th class="col-md-2 text-center">
+                <span ng-click="order('surname')">Фамилия</span>
+                <span class="sortorder" ng-show="predicate === 'surname'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th class="col-md-2 text-center">Имя</th>
+            <th class="col-md-2 text-center">
+                <span ng-click="order('passport')">Серия,номер паспорта</span>
+                <span class="sortorder" ng-show="predicate === 'passport'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th class="col-md-2 text-center">Перейти к счетам</th>
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="client in clients | orderBy: 'lastName'">
+        <tr ng-repeat="client in clients | orderBy:predicate:reverse">
             <td class="text-center">{{$index + 1}}</td>
             <td class="text-center">{{client.lastName}}</td>
             <td class="text-center">{{client.firstName}}</td>
@@ -19,10 +31,13 @@
         </tr>
         <tr>
             <td class="text-center">{{clients.length + 1}}</td>
-            <td><input ng-model="newClient.lastName" class="center-block"/></td>
-            <td><input ng-model="newClient.firstName" class="center-block"/></td>
-            <td><input ng-model="newClient.passport" class="center-block"/></td>
-            <td class="text-center">
+            <td class="vert-middle"><input class="text-center" ng-model="newClient.lastName"/></td>
+            <td class="vert-middle"><input class="text-center" ng-model="newClient.firstName"/></td>
+            <td class="vert-middle">
+                <input class="text-center"
+                       required ng-pattern="/^[А-Я]{2}[0-9]{6}$/"
+                       ng-model="newClient.passport"/></td>
+            <td class="vert-middle">
                 <button type="button" class="btn btn-success btn-s center-block"
                         ng-click="addClient()">
                     <span class="glyphicon glyphicon-plus"></span> Добавить

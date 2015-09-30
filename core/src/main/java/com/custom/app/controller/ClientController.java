@@ -23,6 +23,12 @@ public class ClientController {
         return clientService.findAll();
     }
 
+    @RequestMapping(value = "/{clientId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Client findById(@PathVariable int clientId) {
+        return clientService.findById(clientId);
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
     public void save(@RequestBody Client client){

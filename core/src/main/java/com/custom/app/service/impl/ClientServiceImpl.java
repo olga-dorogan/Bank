@@ -32,6 +32,12 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public Client findById(int clientId) {
+        com.custom.app.entity.Client clientEntity = clientRepository.findOne(clientId);
+        return new Client(clientEntity.getId(), clientEntity.getFirstName(), clientEntity.getLastName(), clientEntity.getPassport());
+    }
+
+    @Override
     @Transactional
     public List<Account> findAllAccountsByClientId(int clientId) {
         com.custom.app.entity.Client clientEntity = clientRepository.findOne(clientId);

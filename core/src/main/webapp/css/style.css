@@ -34,7 +34,7 @@
     margin: 0 auto;
 }
 
-.table > tbody > tr > td {
+.table > tbody > tr > td.vert-middle {
     vertical-align: middle;
 }
 
@@ -51,4 +51,24 @@ div > .row {
 
 .btn-transaction {
     margin-top: 25px;
+}
+
+.sortorder:after {
+    content: '\25b2';
+}
+
+.sortorder.reverse:after {
+    content: '\25bc';
+}
+
+.text-error {
+    color: darkred;
+}
+
+input.submitted.ng-invalid {
+    border: 1px solid darkred;
+}
+
+.form-inline > .form-group > .date-input {
+    width: 120px;
 }

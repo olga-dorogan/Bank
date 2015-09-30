@@ -2,7 +2,8 @@
 angular.module('bankApp', [
     'ngRoute',
     'bankApp.person',
-    'bankApp.transaction'
+    'bankApp.transaction',
+    'ui.bootstrap'
 ])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.otherwise({redirectTo: '/person'});

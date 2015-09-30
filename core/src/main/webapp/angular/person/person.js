@@ -12,41 +12,129 @@ angular.module('bankApp.person', ['ngRoute', 'ngResource'])
             });
     }])
 
-    .controller('PersonCtrl', ['$scope', '$route', 'clientRest', function ($scope, $route, clientRest) {
+    .controller('PersonCtrl', ['$scope', '$route', '$modal', 'clientRest', function ($scope, $route, $modal, clientRest) {
+        var clients = [];
         clientRest.query(function (data) {
             $scope.clients = data;
+            clients = data;
         });
         $scope.newClient = {};
         $scope.addClient = function () {
-            clientRest.save($scope.newClient);
-            $route.reload();
+            if ($scope.isValidNewClient()) {
+                clientRest.save($scope.newClient,
+                    function (success) {
+                        $route.reload();
+                    },
+                    function (error) {
+                        showAlertWithError('Произошла ошибка на сервере');
+                    }
+                );
+            } else {
+                showAlertWithError(
+                    'Фамилия, имя, номер и серия паспорта должны быть заполнены.' +
+                    'Возможно, клиент с указанными паспортными данными уже существует.');
+            }
+        };
+        $scope.search = '';
+        $scope.searchByPassport = function () {
+            $scope.clients = clients.filter(function (value) {
+                return value.passport.indexOf($scope.search) == 0;
+            });
+        };
+        $scope.predicate = 'surname';
+        $scope.reverse = true;
+        $scope.order = function (predicate) {
+            $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+            $scope.predicate = predicate;
+        };
+        $scope.isValidNewClient = function () {
+            return isValidName() && isValidPassport();
+        };
+        var isValidName = function () {
+            return ($scope.newClient.lastName != undefined) && ($scope.newClient.lastName != '') &&
+                ($scope.newClient.firstName != undefined) && ($scope.newClient.firstName != '');
+        };
+        var isValidPassport = function () {
+            var isFilled = ($scope.newClient.passport != undefined) && ($scope.newClient.passport != '');
+            if (!isFilled) {
+                return false;
+            }
+            var isUnique = true;
+            for (var i = 0; i < clients.length; i++) {
+                if ($scope.newClient.passport.indexOf(clients[i].passport) == 0) {
+                    isUnique = false;
+                    break;
+                }
+            }
+            return isUnique;
+        };
+        var showAlertWithError = function (msg) {
+            var alertData = {
+                boldTextTitle: "Ошибка",
+                mode: 'danger',
+                textAlert: msg
+            };
+            var modalInstance = $modal.open(
+                {
+                    templateUrl: 'angular/templates/alertModal.html',
+                    controller: function ($scope, $modalInstance) {
+                        $scope.data = alertData;
+                        $scope.close = function () {
+                            $modalInstance.close();
+                        }
+                    },
+                    backdrop: true,
+                    keyboard: true,
+                    backdropClick: true,
+                    size: 'sm'
+                }
+            );
         };
     }])
 
     .controller('AccountCtrl', [
-        '$routeParams', '$route', '$scope', 'accountRest', 'transactionRest',
-        function ($routeParams, $route, $scope, accountRest, transactionRest) {
-            accountRest.query({id: $routeParams.clientId}, function (data) {
-                $scope.accounts = data;
-                //$scope.client.name = data.name;
-                //$scope.client.surname = data.surname;
+        '$routeParams', '$route', '$scope', 'accountRest', 'clientRest', 'transactionRest',
+        function ($routeParams, $route, $scope, accountRest, clientRest, transactionRest) {
+            accountRest.query({id: $routeParams.clientId}, function (accounts) {
+                clientRest.get({id: $routeParams.clientId}, function (client) {
+                    $scope.accounts = accounts;
+                    $scope.client.firstName = client.firstName;
+                    $scope.client.lastName = client.lastName;
 
-                $scope.transaction.accountFrom.id = getIdOfBestAccount($scope.accounts);
-                $scope.transaction.accountTo.id = getIdOfWorstAccount($scope.accounts);
-                $scope.transaction.amount = 0;
+                    $scope.transaction.accountFrom.id = getIdOfBestAccount($scope.accounts);
+                    $scope.transaction.accountTo.id = getIdOfWorstAccount($scope.accounts);
+                    $scope.transaction.amount = 0;
+                    $scope.transactionMax = $scope.getAccountState($scope.transaction.accountFrom.id);
 
-                $scope.credit.accountTo.id = getIdOfWorstAccount($scope.accounts);
-                $scope.debit.accountFrom.id = getIdOfBestAccount($scope.accounts);
-                $scope.credit.amount = 0;
-                $scope.debit.amount = 0;
+                    $scope.credit.accountTo.id = getIdOfWorstAccount($scope.accounts);
+                    $scope.debit.accountFrom.id = getIdOfBestAccount($scope.accounts);
+                    $scope.credit.amount = 0;
+                    $scope.debit.amount = 0;
+                    $scope.debitMax = $scope.getAccountState($scope.debit.accountFrom.id);
 
+                });
             });
-
+            $scope.reverse = false;
             $scope.client = {};
             $scope.newAccount = {};
             $scope.addAccount = function () {
-                accountRest.save({id: $routeParams.clientId}, $scope.newAccount);
-                $route.reload();
+                if ($scope.addAccountForm.$valid && $scope.isAccountTitleUnique()) {
+                    console.log("Form is valid");
+                    accountRest.save({id: $routeParams.clientId}, $scope.newAccount);
+                    $route.reload();
+                } else {
+                    $scope.addAccountForm.submitted = true;
+                }
+            };
+            $scope.isAccountTitleUnique = function () {
+                var res = true;
+                for (var i = 0; i < $scope.accounts.length; i++) {
+                    if ($scope.accounts[i].title.indexOf($scope.newAccount.title) == 0) {
+                        res = false;
+                        break;
+                    }
+                }
+                return res;
             };
             $scope.transaction = {"accountFrom": {}, "accountTo": {}};
             $scope.credit = {"accountTo": {}};
@@ -74,7 +162,7 @@ angular.module('bankApp.person', ['ngRoute', 'ngResource'])
                 }
                 var worst = {"id": accounts[0].id, "amount": accounts[0].amount};
                 for (var i = 1; i < accounts.length; i++) {
-                    if (accounts[i].amount < worst.amount) {
+                    if (accounts[i].amount <= worst.amount) {
                         worst.id = accounts[i].id;
                         worst.amount = accounts[i].amount;
                     }
@@ -94,16 +182,26 @@ angular.module('bankApp.person', ['ngRoute', 'ngResource'])
                 return 0;
             };
 
-            $scope.changeDebitAmount = function () {
+            $scope.changeDebitMax = function () {
                 $scope.debitMax = $scope.getAccountState($scope.debit.accountFrom.id);
             };
 
-            $scope.changeTransactionAmount = function () {
+            $scope.changeTransactionMax = function () {
                 $scope.transactionMax = $scope.getAccountState($scope.transaction.accountFrom.id);
             };
 
             $scope.doTransaction = function () {
-                doTransactionByType("TRANSACTION", $scope.transaction);
+                if ($scope.isTransferAccountsValid() && $scope.isTransferAmountValid()) {
+                    doTransactionByType("TRANSACTION", $scope.transaction);
+                } else {
+                    $scope.addTransferForm.submitted = true;
+                }
+            };
+            $scope.isTransferAccountsValid = function () {
+                return $scope.transaction.accountFrom.id != $scope.transaction.accountTo.id;
+            };
+            $scope.isTransferAmountValid = function () {
+                return $scope.transaction.amount < $scope.transactionMax;
             };
             $scope.creditAccount = function () {
                 doTransactionByType("CREDIT", $scope.credit);
@@ -114,13 +212,16 @@ angular.module('bankApp.person', ['ngRoute', 'ngResource'])
             var doTransactionByType = function (type, data) {
                 data.date = getCurrentDate();
                 data.type = type;
-                transactionRest.save(data);
-                $route.reload();
+                transactionRest.save(data,
+                    function (success) {
+                        $route.reload();
+                    });
             };
             var getCurrentDate = function () {
                 var date = new Date();
                 // Date format ---- 'yyyy-MM-dd HH:mm:ss'
-                var formattedDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+                var formattedDate = date.getFullYear() + '-' +
+                    (date.getMonth() + 1 - Math.floor((Math.random() * 12))) + '-' + date.getDate();
                 formattedDate += ' ';
                 formattedDate += date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
                 return formattedDate;

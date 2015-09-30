@@ -11,11 +11,11 @@
     </appender>
 
     <logger name="org.springframework.core">
-        <level value="debug"/>
+        <level value="warn"/>
     </logger>
 
     <logger name="org.springframework.beans">
-        <level value="debug"/>
+        <level value="warn"/>
     </logger>
 
     <logger name="org.springframework.context">
