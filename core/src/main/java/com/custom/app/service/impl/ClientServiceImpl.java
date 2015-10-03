@@ -38,7 +38,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Account> findAllAccountsByClientId(int clientId) {
         com.custom.app.entity.Client clientEntity = clientRepository.findOne(clientId);
         List<com.custom.app.entity.Account> accountEntities = clientEntity.getAccounts();

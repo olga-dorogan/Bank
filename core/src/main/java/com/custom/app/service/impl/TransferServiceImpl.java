@@ -27,7 +27,7 @@ public class TransferServiceImpl implements TransferService {
     private AccountRepository accountRepository;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Transfer> findAll() {
         List<com.custom.app.entity.Transfer> transferEntities = transferRepository.findAll();
         return transferEntities
