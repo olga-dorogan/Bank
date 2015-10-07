@@ -5,45 +5,58 @@
                    ng-change="searchByPassport()">
         </label>
     </div>
-    <table class="table table-hover table-bordered table-condensed">
-        <thead>
-        <tr>
-            <th class="col-md-1 text-center">#</th>
-            <th class="col-md-2 text-center">
-                <span ng-click="order('surname')">Фамилия</span>
-                <span class="sortorder" ng-show="predicate === 'surname'" ng-class="{reverse:reverse}"></span>
-            </th>
-            <th class="col-md-2 text-center">Имя</th>
-            <th class="col-md-2 text-center">
-                <span ng-click="order('passport')">Серия,номер паспорта</span>
-                <span class="sortorder" ng-show="predicate === 'passport'" ng-class="{reverse:reverse}"></span>
-            </th>
-            <th class="col-md-2 text-center">Перейти к счетам</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="client in clients | orderBy:predicate:reverse">
-            <td class="text-center">{{$index + 1}}</td>
-            <td class="text-center">{{client.lastName}}</td>
-            <td class="text-center">{{client.firstName}}</td>
-            <td class="text-center">{{client.passport}}</td>
-            <td class="text-center"><a href="#/person/{{client.id}}/account">Счета</a></td>
-        </tr>
-        <tr>
-            <td class="text-center">{{clients.length + 1}}</td>
-            <td class="vert-middle"><input class="text-center" ng-model="newClient.lastName"/></td>
-            <td class="vert-middle"><input class="text-center" ng-model="newClient.firstName"/></td>
-            <td class="vert-middle">
-                <input class="text-center"
-                       required ng-pattern="/^[А-Я]{2}[0-9]{6}$/"
-                       ng-model="newClient.passport"/></td>
-            <td class="vert-middle">
-                <button type="button" class="btn btn-success btn-s center-block"
-                        ng-click="addClient()">
-                    <span class="glyphicon glyphicon-plus"></span> Добавить
-                </button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <form name="addPersonForm">
+        <table class="table table-hover table-bordered table-condensed">
+            <thead>
+            <tr>
+                <th class="col-md-1 text-center">#</th>
+                <th class="col-md-2 text-center">
+                    <span ng-click="order('surname')">Фамилия</span>
+                    <span class="sortorder" ng-show="predicate === 'surname'" ng-class="{reverse:reverse}"></span>
+                </th>
+                <th class="col-md-2 text-center">Имя</th>
+                <th class="col-md-2 text-center">
+                    <span ng-click="order('passport')">Серия,номер паспорта</span>
+                    <span class="sortorder" ng-show="predicate === 'passport'" ng-class="{reverse:reverse}"></span>
+                </th>
+                <th class="col-md-2 text-center">Перейти к счетам</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="client in clients | orderBy:predicate:reverse">
+                <td class="text-center">{{$index + 1}}</td>
+                <td class="text-center">{{client.lastName}}</td>
+                <td class="text-center">{{client.firstName}}</td>
+                <td class="text-center">{{client.passport}}</td>
+                <td class="text-center"><a href="#/person/{{client.id}}/account">Счета</a></td>
+            </tr>
+            <tr>
+                <td class="text-center">{{clients.length + 1}}</td>
+                <td class="vert-middle">
+                    <input class="text-center" ng-class="{submitted:addPersonForm.submitted}"
+                           ng-model="newClient.lastName" name="LastName" required/>
+                </td>
+                <td class="vert-middle">
+                    <input class="text-center" ng-class="{submitted:addPersonForm.submitted}"
+                           ng-model="newClient.firstName" name="FirstName" required/>
+                </td>
+                <td class="vert-middle">
+                    <input class="text-center" ng-class="{submitted:addPersonForm.submitted}"
+                           name="Passport"
+                           ng-required="requirePassport"
+                           ng-pattern="passportPattern"
+                           tooltip="Пример: ЕР123456"
+                           tooltip-trigger="{{{true: 'focus', false: 'never'}[true]}}"
+                           ng-model="newClient.passport"/>
+                </td>
+                <td class="vert-middle">
+                    <button type="button" class="btn btn-success btn-s center-block"
+                            ng-click="addClient()">
+                        <span class="glyphicon glyphicon-plus"></span> Добавить
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
 </div>

@@ -65,6 +65,10 @@ div > .row {
     color: darkred;
 }
 
+.table > tbody > tr > td.vert-middle > span.text-error {
+    vertical-align: top;
+}
+
 input.submitted.ng-invalid {
     border: 1px solid darkred;
 }

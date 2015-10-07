@@ -25,16 +25,10 @@
                 <td class="vert-middle text-center">
                     <input ng-model="newAccount.title" name="Title"
                            class="text-center" ng-class="{submitted:addAccountForm.submitted}" type="text" required/>
-                    <span class="text-error"
-                          data-ng-show="addAccountForm.submitted && (addAccountForm.Title.$error.required || !isAccountUnique())">
-                            Обязательное уникальное поле</span>
                 </td>
                 <td class="vert-middle text-center">
                     <input ng-model="newAccount.amount" name="Amount"
                            class="text-center" ng-class="{submitted:addAccountForm.submitted}" type="number" required/>
-                    <span class="text-error"
-                          data-ng-show="addAccountForm.submitted && addAccountForm.Amount.$error.required">
-                            Обязательное поле</span>
                 </td>
                 <td class="vert-middle">
                     <button type="button" class="btn btn-success btn-s center-block"

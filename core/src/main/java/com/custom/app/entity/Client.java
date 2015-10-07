@@ -97,3 +97,5 @@ public class Client extends AbstractEntity {
                 '}';
     }
 }
+
+

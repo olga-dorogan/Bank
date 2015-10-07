@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
  * Created by olga on 17.09.15.
  */
 @Configuration
-@ComponentScan({"com.custom.app.service", "com.custom.app.service.impl"})
+@ComponentScan({"com.custom.app.service"})
 public class BankConfig {
 
 }

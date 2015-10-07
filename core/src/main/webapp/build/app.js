@@ -25,89 +25,103 @@ angular.module('bankApp.person', ['ngRoute', 'ngResource'])
             });
     }])
 
-    .controller('PersonCtrl', ['$scope', '$route', '$modal', 'clientRest', function ($scope, $route, $modal, clientRest) {
-        var clients = [];
-        clientRest.query(function (data) {
-            $scope.clients = data;
-            clients = data;
-        });
-        $scope.newClient = {};
-        $scope.addClient = function () {
-            if ($scope.isValidNewClient()) {
-                clientRest.save($scope.newClient,
-                    function (success) {
-                        $route.reload();
-                    },
-                    function (error) {
-                        showAlertWithError('Произошла ошибка на сервере');
+    .controller('PersonCtrl', ['$scope', '$route', '$modal', 'clientRest',
+        function ($scope, $route, $modal, clientRest) {
+            var clients = [];
+            clientRest.query(function (data) {
+                $scope.clients = data;
+                clients = data;
+            });
+            $scope.newClient = {};
+            $scope.addClient = function () {
+                if ($scope.addPersonForm.$valid && $scope.isValidNewClient()) {
+                    clientRest.save($scope.newClient,
+                        function (success) {
+                            $route.reload();
+                        },
+                        function (error) {
+                            showAlertWithError('Произошла ошибка на сервере');
+                        }
+                    );
+                } else {
+                    if (!isValidPassport()) {
+                        showAlertWithError('Паспотрные данные должны быть уникальными');
+                    }
+                    $scope.addPersonForm.submitted = true;
+                }
+            };
+            $scope.search = '';
+            $scope.searchByPassport = function () {
+                $scope.clients = clients.filter(function (value) {
+                    return value.passport.indexOf($scope.search) == 0;
+                });
+            };
+            $scope.predicate = 'surname';
+            $scope.reverse = true;
+            $scope.order = function (predicate) {
+                $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+                $scope.predicate = predicate;
+            };
+            $scope.isValidNewClient = function () {
+                return isValidName() && isValidPassport();
+            };
+            $scope.isValidPassport = isValidPassport;
+            var isValidName = function () {
+                return ($scope.newClient.lastName != undefined) && ($scope.newClient.lastName != '') &&
+                    ($scope.newClient.firstName != undefined) && ($scope.newClient.firstName != '');
+            };
+            var isValidPassport = function () {
+                var isFilled = ($scope.newClient.passport != undefined) && ($scope.newClient.passport != '');
+                if (!isFilled) {
+                    return false;
+                }
+                var isUnique = true;
+                for (var i = 0; i < clients.length; i++) {
+                    if ($scope.newClient.passport.indexOf(clients[i].passport) == 0) {
+                        isUnique = false;
+                        break;
+                    }
+                }
+                return isUnique;
+            };
+            $scope.passportPattern = (function () {
+                var regexp = /^[А-Я]{2}[0-9]{6}$/;
+                return {
+                    test: function (value) {
+                        if ($scope.requirePassport === false) {
+                            return true;
+                        }
+                        return regexp.test(value);
+                    }
+                };
+            })();
+            var showAlertWithError = function (msg) {
+                var alertData = {
+                    boldTextTitle: "Ошибка",
+                    mode: 'danger',
+                    textAlert: msg
+                };
+                var modalInstance = $modal.open(
+                    {
+                        templateUrl: 'angular/templates/alertModal.html',
+                        controller: function ($scope, $modalInstance) {
+                            $scope.data = alertData;
+                            $scope.close = function () {
+                                $modalInstance.close();
+                            }
+                        },
+                        backdrop: true,
+                        keyboard: true,
+                        backdropClick: true,
+                        size: 'sm'
                     }
                 );
-            } else {
-                showAlertWithError(
-                    'Фамилия, имя, номер и серия паспорта должны быть заполнены.' +
-                    'Возможно, клиент с указанными паспортными данными уже существует.');
-            }
-        };
-        $scope.search = '';
-        $scope.searchByPassport = function () {
-            $scope.clients = clients.filter(function (value) {
-                return value.passport.indexOf($scope.search) == 0;
-            });
-        };
-        $scope.predicate = 'surname';
-        $scope.reverse = true;
-        $scope.order = function (predicate) {
-            $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
-            $scope.predicate = predicate;
-        };
-        $scope.isValidNewClient = function () {
-            return isValidName() && isValidPassport();
-        };
-        var isValidName = function () {
-            return ($scope.newClient.lastName != undefined) && ($scope.newClient.lastName != '') &&
-                ($scope.newClient.firstName != undefined) && ($scope.newClient.firstName != '');
-        };
-        var isValidPassport = function () {
-            var isFilled = ($scope.newClient.passport != undefined) && ($scope.newClient.passport != '');
-            if (!isFilled) {
-                return false;
-            }
-            var isUnique = true;
-            for (var i = 0; i < clients.length; i++) {
-                if ($scope.newClient.passport.indexOf(clients[i].passport) == 0) {
-                    isUnique = false;
-                    break;
-                }
-            }
-            return isUnique;
-        };
-        var showAlertWithError = function (msg) {
-            var alertData = {
-                boldTextTitle: "Ошибка",
-                mode: 'danger',
-                textAlert: msg
             };
-            var modalInstance = $modal.open(
-                {
-                    templateUrl: 'angular/templates/alertModal.html',
-                    controller: function ($scope, $modalInstance) {
-                        $scope.data = alertData;
-                        $scope.close = function () {
-                            $modalInstance.close();
-                        }
-                    },
-                    backdrop: true,
-                    keyboard: true,
-                    backdropClick: true,
-                    size: 'sm'
-                }
-            );
-        };
-    }])
+        }])
 
     .controller('AccountCtrl', [
-        '$routeParams', '$route', '$scope', 'accountRest', 'clientRest', 'transactionRest',
-        function ($routeParams, $route, $scope, accountRest, clientRest, transactionRest) {
+        '$routeParams', '$route', '$scope', '$modal', 'accountRest', 'clientRest', 'transactionRest',
+        function ($routeParams, $route, $scope, $modal, accountRest, clientRest, transactionRest) {
             accountRest.query({id: $routeParams.clientId}, function (accounts) {
                 clientRest.get({id: $routeParams.clientId}, function (client) {
                     $scope.accounts = accounts;
@@ -132,10 +146,19 @@ angular.module('bankApp.person', ['ngRoute', 'ngResource'])
             $scope.newAccount = {};
             $scope.addAccount = function () {
                 if ($scope.addAccountForm.$valid && $scope.isAccountTitleUnique()) {
-                    console.log("Form is valid");
-                    accountRest.save({id: $routeParams.clientId}, $scope.newAccount);
-                    $route.reload();
+                    accountRest.save(
+                        {id: $routeParams.clientId},
+                        $scope.newAccount,
+                        function (success) {
+                            $route.reload();
+                        },
+                        function (error) {
+                            showAlertWithError('Произошла ошибка на сервере');
+                        });
                 } else {
+                    if (!$scope.isAccountTitleUnique()) {
+                        showAlertWithError('Название счета должно быть уникальным');
+                    }
                     $scope.addAccountForm.submitted = true;
                 }
             };
@@ -240,7 +263,31 @@ angular.module('bankApp.person', ['ngRoute', 'ngResource'])
                 return formattedDate;
             };
 
+            var showAlertWithError = function (msg) {
+                var alertData = {
+                    boldTextTitle: "Ошибка",
+                    mode: 'danger',
+                    textAlert: msg
+                };
+                var modalInstance = $modal.open(
+                    {
+                        templateUrl: 'angular/templates/alertModal.html',
+                        controller: function ($scope, $modalInstance) {
+                            $scope.data = alertData;
+                            $scope.close = function () {
+                                $modalInstance.close();
+                            }
+                        },
+                        backdrop: true,
+                        keyboard: true,
+                        backdropClick: true,
+                        size: 'sm'
+                    }
+                );
+            };
+
         }])
+
     .factory('clientRest', function ($resource) {
         return $resource('client/:id');
     })
